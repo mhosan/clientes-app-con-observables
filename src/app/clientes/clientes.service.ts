@@ -1,10 +1,15 @@
+
 import { Injectable } from '@angular/core';
 import {Cliente, Grupo } from './cliente.model';
+import { Observable } from 'rxjs';
+import { Subject } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClientesService {
+  private clientes$ = new Subject<Cliente[]>();  //vamos a observar el array de clientes
   private clientes: Cliente[];
   private grupos: Grupo[];
 
@@ -40,6 +45,7 @@ export class ClientesService {
 
    agregarCliente(cliente: Cliente){
      this.clientes.push(cliente);
+     this.clientes$.next(this.clientes);//el metodo para generar el evento es next, y se pasa el array con el estado de ese momento
    }
 
    nuevoCliente(): Cliente {
@@ -50,5 +56,9 @@ export class ClientesService {
       direccion: '',
       grupo: 0
      };
+   }
+
+   getCliente$(): Observable<Cliente[]>{
+     return this.clientes$.asObservable();
    }
 }
